@@ -93,9 +93,10 @@ func waitForMessage(c *WSClient) tea.Cmd {
 	return func() tea.Msg {
 		msg, ok := <-c.recv
 		if !ok {
-			return tea.Quit()  // ✅ If channel is closed → exit program
+			return tea.Quit() // Channel is closed → exit program
 		}
 		return msg
 	}
 }
+
 
