@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"go-chat-cli/server"
+	"github.com/EricNguyen1206/go-chat-cli/server"
 )
 
 func main() {

@@ -2,7 +2,7 @@ package server
 
 import (
 	"fmt"
-	"go-chat-cli/utils"
+	"github.com/EricNguyen1206/go-chat-cli/utils"
 )
 
 type Hub struct {

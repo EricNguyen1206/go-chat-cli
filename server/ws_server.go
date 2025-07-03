@@ -1,8 +1,9 @@
 package server
 
 import (
-	"go-chat-cli/utils"
 	"net/http"
+
+	"github.com/EricNguyen1206/go-chat-cli/utils"
 
 	"github.com/gorilla/websocket"
 )

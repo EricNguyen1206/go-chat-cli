@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"go-chat-cli/client"
+	"github.com/EricNguyen1206/go-chat-cli/client"
 )
 
 func main() {
