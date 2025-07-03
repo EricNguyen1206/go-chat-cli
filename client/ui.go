@@ -16,20 +16,20 @@ type model struct {
 func StartClientUI(wsURL string, username string) {
 	client, err := NewWSClient(wsURL)
 	if err != nil {
-		fmt.Println("❌ Kết nối thất bại:", err)
+		fmt.Println("❌ Connection failed:", err)
 		return
 	}
 
 	m := model{
 		client:   client,
 		username: username,
-		messages: []string{"✅ Đã kết nối đến server."},
+		messages: []string{"✅ Connected to server."},
 		input:    "",
 	}
 
 	p := tea.NewProgram(m)
 	if err := p.Start(); err != nil {
-		fmt.Println("❌ Lỗi chạy chương trình:", err)
+		fmt.Println("❌ Error running program:", err)
 	}
 }
 
@@ -75,7 +75,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m model) View() string {
 	output := "💬 Chat Room:\n\n"
 
-	// Hiển thị tối đa 20 tin nhắn gần nhất
+	// Display the last 20 messages
 	start := 0
 	if len(m.messages) > 20 {
 		start = len(m.messages) - 20
@@ -91,6 +91,11 @@ func (m model) View() string {
 
 func waitForMessage(c *WSClient) tea.Cmd {
 	return func() tea.Msg {
-		return <-c.recv
+		msg, ok := <-c.recv
+		if !ok {
+			return tea.Quit()  // ✅ If channel is closed → exit program
+		}
+		return msg
 	}
 }
+

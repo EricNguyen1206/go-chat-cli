@@ -37,7 +37,7 @@ func main() {
 	}
 }
 
-// Gợi ý IP mặc định → user có thể sửa
+// Default IP suggestion → user can edit
 func promptIPWithDefault(defaultIP string, reader *bufio.Reader) string {
 	fmt.Printf("🌐 Enter server IP [%s]: ", defaultIP)
 	ipInput, _ := reader.ReadString('\n')

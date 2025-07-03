@@ -40,24 +40,40 @@ func NewWSClient(url string) (*WSClient, error) {
 }
 
 func (c *WSClient) readPump() {
+	defer func() {
+		close(c.recv) // ✅ Important: close channel to avoid leak
+		c.conn.Close()
+	}()
+
 	for {
 		_, message, err := c.conn.ReadMessage()
 		if err != nil {
+			log.Println("🔌 Error reading:", err)
 			break
 		}
-		c.recv <- string(message)
+
+		// Send message if channel is not closed
+		select {
+		case c.recv <- string(message):
+		default: // avoid panic if someone has quit
+		}
 	}
 }
 
 func (c *WSClient) writePump() {
+	defer func() {
+		c.conn.Close()
+	}()
+
 	for msg := range c.send {
 		err := c.conn.WriteMessage(websocket.TextMessage, []byte(msg))
 		if err != nil {
-			log.Println("Lỗi gửi tin nhắn:", err)
+			log.Println("❗ Error sending:", err)
 			break
 		}
 	}
 }
+
 
 func (c *WSClient) Close() {
 	c.conn.Close()

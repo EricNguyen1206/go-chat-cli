@@ -49,11 +49,13 @@ func (c *Client) readPump() {
 	defer func() {
 		c.hub.unregister <- c
 		c.conn.Close()
+		utils.Info("🔌 Disconnected:", c.username)
 	}()
 
 	for {
 		_, message, err := c.conn.ReadMessage()
 		if err != nil {
+			utils.Error("❗ Read error:", err)
 			break
 		}
 		wrapped := []byte("[" + c.username + "]: " + string(message))
@@ -61,12 +63,19 @@ func (c *Client) readPump() {
 	}
 }
 
+
 func (c *Client) writePump() {
-	defer c.conn.Close()
+	defer func() {
+		c.hub.unregister <- c // ✅ trigger remove client
+		c.conn.Close()
+	}()
+
 	for msg := range c.send {
 		err := c.conn.WriteMessage(websocket.TextMessage, msg)
 		if err != nil {
+			utils.Error("❗ Write error:", err)
 			break
 		}
 	}
 }
+

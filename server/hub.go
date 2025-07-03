@@ -44,10 +44,11 @@ func (h *Hub) Run() {
 				select {
 				case client.send <- message:
 				default:
+					// If not sent → close client
+					utils.Warn("⚠️ Failed to send to", client.username)
 					close(client.send)
 					delete(h.clients, client)
 				}
 			}
-		}
 	}
 }
