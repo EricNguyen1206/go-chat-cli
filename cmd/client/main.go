@@ -26,14 +26,7 @@ func main() {
 
 		fmt.Println("🔌 Connecting to", wsURL)
 
-		// Thử kết nối WebSocket (timeout nhanh)
-		success := testConnection(wsURL)
-		if success {
-			client.StartClientUI(wsURL, username)
-			break
-		} else {
-			fmt.Println("❌ Cannot connect to server. Please check IP and try again.\n")
-		}
+		client.StartClientUI(wsURL, username)
 	}
 }
 
@@ -95,7 +88,7 @@ func getLocalIPv4() string {
 
 
 // Test connection to WebSocket server quickly
-func testConnection(wsURL string) bool {
+func TestConnection(wsURL string) bool {
 	conn, _, err := client.DialWebSocket(wsURL, 2*time.Second)
 	if err != nil {
 		return false

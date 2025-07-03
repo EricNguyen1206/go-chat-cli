@@ -45,6 +45,10 @@ func ServeWS(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	go client.readPump()
 }
 
+func (c *Client) Disconnect() {
+	c.hub.unregister <- c
+}
+
 func (c *Client) readPump() {
 	defer func() {
 		c.hub.unregister <- c
@@ -78,4 +82,3 @@ func (c *Client) writePump() {
 		}
 	}
 }
-

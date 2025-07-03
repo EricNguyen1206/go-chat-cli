@@ -41,24 +41,25 @@ func NewWSClient(url string) (*WSClient, error) {
 
 func (c *WSClient) readPump() {
 	defer func() {
-		close(c.recv) // ✅ Important: close channel to avoid leak
 		c.conn.Close()
+		close(c.recv) // Ensure closed once
 	}()
 
 	for {
 		_, message, err := c.conn.ReadMessage()
 		if err != nil {
-			log.Println("🔌 Error reading:", err)
+			log.Println("🔌 Read error:", err)
 			break
 		}
 
-		// Send message if channel is not closed
+		// ✅ Check if channel is still open
 		select {
 		case c.recv <- string(message):
-		default: // avoid panic if someone has quit
+		default: // Avoid sending to closed channel
 		}
 	}
 }
+
 
 func (c *WSClient) writePump() {
 	defer func() {
